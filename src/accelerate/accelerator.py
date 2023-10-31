@@ -1429,9 +1429,10 @@ class Accelerator:
                     else:
                         device_ids, output_device = None, None
 
-                    model = torch.nn.parallel.DistributedDataParallel(
-                        model, device_ids=device_ids, output_device=output_device, **kwargs
-                    )
+                    with torch.cuda.stream(torch.cuda.Stream()):
+                        model = torch.nn.parallel.DistributedDataParallel(
+                            model, device_ids=device_ids, output_device=output_device, **kwargs
+                        )
             elif self.distributed_type == DistributedType.FSDP:
                 from torch.distributed.fsdp.fully_sharded_data_parallel import FullyShardedDataParallel as FSDP
 
